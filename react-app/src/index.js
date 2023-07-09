@@ -13,6 +13,7 @@ import "./index.css";
 const store = configureStore();
 
 if (process.env.NODE_ENV !== "production") {
+	console.log(process.env.NODE_ENV)
 	window.store = store;
 	window.sessionActions = sessionActions;
 }

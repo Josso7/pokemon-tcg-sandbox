@@ -1,0 +1,8 @@
+.single-card-image {
+    width: 214px;
+    height: 300px;
+}
+
+.page-number-wrapper {
+    display: flex;
+}
