@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import pokemon from 'pokemontcgsdk'
 import './PokemonSearch.css'
 import energyCards from '../../Data/energyCards'
+import { standardLegal } from '../../Data/searches'
+import { getPageResults } from '../../utils/searchUtils'
+import { createPortal } from 'react-dom'
 
 function PokemonSearch() {
 
@@ -13,30 +16,38 @@ function PokemonSearch() {
     const [pageNumber, setPageNumber] = useState(0)
     const [resultCount, setResultCount] = useState(0)
     const [loading, setLoading] = useState(false)
+    const [loadingPage, setLoadingPage] = useState(1)
 
     const handleSearch = async () => {
+        setPageCards([])
+        setResultCount(0)
+        setPageNumber(0)
         setLoading(true)
         const queryObject = {}
-        const searchResults = []
         if(supertype === 'Energy'){
             setResults(energyCards)
             setResultCount(16)
             setLoading(false)
             return
         }
-        if(expansion) queryObject.q = `set.id:${expansion}`
+        // if(expansion === 'standard'){
+        //     queryObject.q = 'regulationMark:E OR regulationMark:F OR regulationMark:G'
+        //     const results = await pokemon.card.where(queryObject)
+        //     setResultCount(results.totalCount)
+        //     const searchResults = await getPageResults(results, queryObject)
+        //     console.log(searchResults)
+        //     setResults(searchResults)
+        //     setLoading(false)
+        //     return
+        // }
+        if(expansion === 'standard') queryObject.q = 'regulationMark:E OR regulationMark:F OR regulationMark:G'
+        else if(expansion) queryObject.q = `set.id:${expansion}`
         if(supertype) queryObject.q = queryObject.q + ` supertype:${supertype}`
         if(type && supertype === 'Pokémon') queryObject.q = queryObject.q + ` types:${type}`
         console.log(queryObject)
         const results = await pokemon.card.where(queryObject)
         setResultCount(results.totalCount)
-        for(let i = 1; i < Math.ceil(results.totalCount / 250) + 1; i++){
-            queryObject.page = i
-            const pageResults = await pokemon.card.where(queryObject)
-            pageResults.data.map((card) => {
-                searchResults.push(card)
-            })
-        }
+        const searchResults = await getPageResults(results, queryObject, setLoadingPage)
         console.log(searchResults)
         setResults(searchResults)
         setLoading(false)
@@ -66,12 +77,14 @@ function PokemonSearch() {
 
     return (
         <>
-        {loading && <div className='loading-background'></div>}
             <div className="search-options-wrapper">
 
                 <select onChange={(e) => setExpansion(e.target.value)} disabled={supertype === 'Energy'}>
                     <option  value=''>
                         - Select an Expansion -
+                    </option>
+                    <option value='standard'>
+                        All Standard Legal Cards
                     </option>
                     <option value='sv1'>
                         Scarlet & Violet
@@ -134,11 +147,20 @@ function PokemonSearch() {
 
                 <button onClick={() => handleSearch()}> Search </button>
             </div>
-            {pageCards && pageCards.length &&
-            pageCards.map((card) => (
-                <img key={card?.id} className='single-card-image' src={card?.images?.large}></img>
-            ))
-            }
+            {loading && createPortal(<div className='loading-background'>
+                <div className='loading-text'>
+                    <p>Loading results, this may take some time</p>
+                    {resultCount && resultCount < 251 && <p>{`Loading ${resultCount} of ${resultCount} `}</p> || ''}
+                    {resultCount > 251 && <p>{`Loading ${loadingPage * 250 > resultCount ? resultCount : loadingPage * 250} of ${resultCount} `}</p>}
+                </div>
+            </div>, document.querySelector('#root'))}
+            <div className='cards-wrapper'>
+                {pageCards && pageCards.length &&
+                pageCards.map((card) => (
+                    <img key={card?.id} className='single-card-image' src={card?.images?.large}></img>
+                    ))
+                }
+            </div>
             {results && results.length && <div className='page-number-wrapper'>
                 <div>
                 {pageNumber > 0 && <button onClick={() => decreasePage(pageNumber)}> Previous Page </button>}

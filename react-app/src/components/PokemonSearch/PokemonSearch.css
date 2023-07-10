@@ -6,3 +6,31 @@
 .page-number-wrapper {
     display: flex;
 }
+
+.loading-background {
+    position: absolute;
+    width: 500px;
+    height: 200px;
+    background-color: darkred;
+    opacity: .75;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+}
+
+.loading-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: yellow
+}
+
+.cards-wrapper {
+    display: flex;
+    flex-wrap: wrap
+}
