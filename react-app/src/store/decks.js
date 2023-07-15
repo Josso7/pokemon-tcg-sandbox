@@ -3,6 +3,8 @@ const LOAD_USER_DECKS = 'decks/LOAD_USER_DECKS'
 const ADD_CARD = 'decks/ADD_CARD'
 const REMOVE_CARD = 'decks/REMOVE_CARD'
 const UPDATE_DECK = 'decks/UPDATE_DECK'
+const CREATE_DECK = 'decks/CREATE_DECK'
+const DELETE_DECK = 'decks/DELETE_DECK'
 
 
 const loadDeck = (deck) => {
@@ -19,16 +21,32 @@ const loadUserDecks = (decks) => {
     }
 }
 
-const addCardCreator = (card) => {
+const addCardCreator = (deckId, card) => {
     return {
         type: ADD_CARD,
+        deckId,
         card
     }
 }
 
-const removeCardCreator = (card) => {
+const createDeckCreator = (deck) => {
+    return {
+        type: CREATE_DECK,
+        deck
+    }
+}
+
+const deleteDeckCreator = (deck) => {
+    return {
+        type: DELETE_DECK,
+        deck
+    }
+}
+
+const removeCardCreator = (deckId, card) => {
     return {
         type: REMOVE_CARD,
+        deckId,
         card
     }
 }
@@ -69,12 +87,12 @@ export const addCardToDeckThunk = (deckId, card) => async (dispatch) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        }, 
+        },
         body: JSON.stringify(card)
     })
     if(response.ok){
         const data = await response.json()
-        dispatch(addCardCreator(data))
+        dispatch(addCardCreator(deckId, data))
         return
     } else {
         const errors = await response.json()
@@ -87,12 +105,12 @@ export const removeCardFromDeckThunk = (deckId, card) => async (dispatch) => {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
-        }, 
+        },
         body: JSON.stringify(card)
     })
     if(response.ok){
         const data = await response.json()
-        dispatch(removeCardCreator(data))
+        dispatch(removeCardCreator(deckId, data))
         return
     } else {
         const errors = await response.json()
@@ -101,9 +119,13 @@ export const removeCardFromDeckThunk = (deckId, card) => async (dispatch) => {
 }
 
 export const deleteDeckThunk = (deckId) => async (dispatch) => {
-    const response = await fetch(`/api/decks/${deckId}/delete`)
+    const response = await fetch(`/api/decks/${deckId}/delete`, {
+        method: 'DELETE'
+    })
 
     if(response.ok){
+        const data = await response.json()
+        dispatch(deleteDeckCreator(data))
         return
     } else {
         const errors = await response.json()
@@ -111,13 +133,31 @@ export const deleteDeckThunk = (deckId) => async (dispatch) => {
     }
 }
 
-export const updateDeck = (name) => async (dispatch) => {
+export const createDeckThunk = (name) => async (dispatch) => {
+    const response = await fetch(`/api/decks/create`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({name})
+    })
+    if(response.ok){
+        const data = await response.json()
+        dispatch(createDeckCreator(data))
+        return data.id
+    } else {
+        const errors = await response.json()
+        return errors
+    }
+}
+
+export const updateDeckThunk = (deckId, name) => async (dispatch) => {
     const response = await fetch(`/api/decks/${deckId}/edit`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(name)
+        body: JSON.stringify({name})
     })
     if(response.ok){
         const data = await response.json()
@@ -130,7 +170,7 @@ export const updateDeck = (name) => async (dispatch) => {
 }
 
 
-const initialState = {cards: {}}
+const initialState = {userDecks: {}}
 
 const reducer = (state = initialState, action) => {
     switch(action.type){
@@ -139,30 +179,43 @@ const reducer = (state = initialState, action) => {
             action.decks.forEach((deck) => {
                 newState.userDecks[deck.id] = deck
             })
+            console.log(newState)
             return newState
         }
         case LOAD_DECK: {
             const newState = {}
             action.deck.forEach((card) => {
-                newState.cards[card.id] = card 
+                newState.cards[card.id] = card
             })
             return newState
         }
+        case CREATE_DECK: {
+            const newState = global.structuredClone(state)
+            newState.userDecks[action.deck.id] = action.deck
+            return newState
+        }
         case ADD_CARD: {
-            const newState = {...state}
-            newState.cards[action.card.id] = card
+            console.log(action.card)
+            const newState = global.structuredClone(state)
+            newState.userDecks[action.deckId].cards[action.card.id] = action.card
             return newState
         }
         case REMOVE_CARD: {
-            const newState = {...state}
-            delete newState.cards[action.card.id] 
+            const newState = global.structuredClone(state)
+            delete newState.userDecks[action.deckId].cards[action.card.id]
+            return newState
+        }
+        case DELETE_DECK: {
+            const newState = global.structuredClone(state)
+            delete newState.userDecks[action.deck.id]
             return newState
         }
         case UPDATE_DECK: {
-            const newState = {...state}
-            newState.decks[action.deck.id] = action.deck
+            const newState = global.structuredClone(state)
+            newState.userDecks[action.deck.id] = action.deck
             return newState
         }
+        default: return state
     }
 }
 

@@ -1,0 +1,54 @@
+.deck-single-card {
+    width: 214px;
+    height: 300px;
+}
+
+.deck-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    row-gap: 20px;
+    column-gap: 20px;
+}
+
+.active-tab {
+    color: red;
+}
+
+.deck-page-number-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    column-gap: 20px;
+}
+
+.scene-toggle-wrapper{
+    display: flex;
+    justify-content: center;
+    column-gap: 20px;
+    padding-left: 10px;
+}
+
+.deck-builder-header {
+    text-align: center;
+}
+
+.deck-header {
+    text-align: center;
+}
+
+.deck-length {
+    text-align: center;
+}
+
+.delete-deck-button {
+    color: red;
+}
+
+.single-deck-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

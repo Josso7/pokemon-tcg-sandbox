@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import pokemon from 'pokemontcgsdk'
-import './PokemonSearch.css'
-import energyCards from '../../Data/energyCards'
-import { standardLegal } from '../../Data/searches'
-import { getPageResults } from '../../utils/searchUtils'
+import './DeckCardBrowser.css'
+import energyCards from '../../../Data/energyCards'
+import { getPageResults } from '../../../utils/searchUtils'
 import { createPortal } from 'react-dom'
+import { addCardToDeckThunk } from '../../../store/decks'
+import { useDispatch } from 'react-redux'
 
-function PokemonSearch() {
+function PokemonSearch({ selectedDeck }) {
 
     const [expansion, setExpansion] = useState()
     const [supertype, setSupertype] = useState()
@@ -17,6 +18,12 @@ function PokemonSearch() {
     const [resultCount, setResultCount] = useState(0)
     const [loading, setLoading] = useState(false)
     const [loadingPage, setLoadingPage] = useState(1)
+    const dispatch = useDispatch()
+
+    const addCard = (card) => {
+        const payload = {imageUrl: card.images.large}
+        dispatch(addCardToDeckThunk(selectedDeck, payload))
+    }
 
     const handleSearch = async () => {
         setPageCards([])
@@ -157,9 +164,17 @@ function PokemonSearch() {
             </div>, document.querySelector('#root'))}
             <div className='cards-wrapper'>
                 {pageCards && pageCards.length &&
-                pageCards.map((card) => (
-                    <img key={card?.id} className='single-card-image' src={card?.images?.large}></img>
-                    ))
+                pageCards.map((card) => {
+                    console.log(card);
+                    return (
+                        <>
+                            <div className='search-results-single-card-wrapper'>
+                                <img key={card?.id} className='single-card-image' src={card?.images?.large}></img>
+                                <button onClick={() => addCard(card)}> Add </button>
+                            </div>
+                        </>
+                    )
+                })
                 || ''}
             </div>
             {results && results.length && <div className='page-number-wrapper'>

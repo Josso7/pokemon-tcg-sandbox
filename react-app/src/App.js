@@ -6,6 +6,7 @@ import LoginFormPage from "./components/LoginFormPage";
 import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
 import PokemonSearch from "./components/PokemonSearch"
+import DeckBuilderWrapper from "./components/DeckBuilder";
 
 function App() {
   const dispatch = useDispatch();
@@ -19,6 +20,15 @@ function App() {
       <Navigation isLoaded={isLoaded} />
       {isLoaded && (
         <Switch>
+          <Route exact path='/'>
+            <PokemonSearch />
+          </Route>
+          <Route exact path='/build-deck'>
+            <DeckBuilderWrapper />
+          </Route>
+          <Route exact path='/'>
+            <DeckBuilderWrapper />
+          </Route>
           <Route path="/login" >
             <LoginFormPage />
           </Route>

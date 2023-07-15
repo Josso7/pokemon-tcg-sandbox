@@ -13,16 +13,16 @@ def get_user_decks():
         return {"errors": "No decks found"}
     if decks:
         return [deck.to_dict() for deck in decks]
-    
+
 @deck_routes.route('/<int:deck_id>')
 def get_single_deck(deck_id):
     deck = Deck.query.get(deck_id)
 
     if not deck:
         return {"errors": "Deck not found"}
-    if deck: 
+    if deck:
         return deck.to_dict()
-    
+
 @deck_routes.route('/<int:deck_id>/addCard', methods=['POST'])
 def add_card(deck_id):
     deck = Deck.query.get(deck_id)
@@ -33,7 +33,7 @@ def add_card(deck_id):
         new_card = Card(image_url = data['imageUrl'])
         deck.cards.append(new_card)
         db.session.commit()
-        return deck.to_dict()
+        return new_card.to_dict()
 
 @deck_routes.route('/<int:deck_id>/removeCard', methods=['DELETE'])
 def remove_card(deck_id):
@@ -47,10 +47,10 @@ def remove_card(deck_id):
     if not current_card:
         return {"errors": "Card not found"}
     if current_card:
-        deck.cards.remove(current_card) 
+        deck.cards.remove(current_card)
         db.session.commit()
-        return current_card.to_dict() 
-    
+        return current_card.to_dict()
+
 @deck_routes.route('/create', methods=['POST'])
 @login_required
 def create_deck():
@@ -70,7 +70,7 @@ def delete_deck(deck_id):
     if deck:
         db.session.delete(deck)
         db.session.commit()
-        return "Deleted"
+        return deck.to_dict()
 
 @deck_routes.route('/<int:deck_id>/edit', methods=['PUT'])
 def edit_deck(deck_id):
