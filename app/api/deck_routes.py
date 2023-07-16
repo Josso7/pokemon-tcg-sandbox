@@ -30,7 +30,7 @@ def add_card(deck_id):
     if not deck:
         return {"errors": "Deck not found"}
     if deck:
-        new_card = Card(image_url = data['imageUrl'])
+        new_card = Card(image_url = data['imageUrl'], supertype = data['supertype'], subtype = data['subtypes'][0])
         deck.cards.append(new_card)
         db.session.commit()
         return new_card.to_dict()
