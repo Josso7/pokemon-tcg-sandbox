@@ -18,8 +18,12 @@ function Deck({ selectedDeck }){
     useEffect(() => {
         console.log(cards)
         // setDeck(decks.find(deck => deck.id == selectedDeck))
-        if(selectedDeck !== '0') setCards(Object.values(deck.cards))
-        setCurrentPage(0)
+        if(selectedDeck !== '0') {
+            setCards(Object.values(deck.cards))
+        }
+        if(selectedDeck === '0'){
+            setCurrentPage(0)
+        }
     }, [selectedDeck, deck])
 
     useEffect(() => {

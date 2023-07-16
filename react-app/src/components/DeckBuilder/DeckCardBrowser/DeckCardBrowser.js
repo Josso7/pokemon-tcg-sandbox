@@ -117,7 +117,7 @@ function PokemonSearch({ selectedDeck }) {
 
     return (
         <>
-        <Snackbar TransitionComponent={TransitionSlideUp} open={toastOpen} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
+        {toastOpen && <Snackbar TransitionComponent={TransitionSlideUp} open={toastOpen} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
             <div>
                 {toastType === 'error' && <Alert onClose={handleClose} severity='error' sx={{ width: '100%' }}>
                     <AlertTitle> Error </AlertTitle>
@@ -128,7 +128,7 @@ function PokemonSearch({ selectedDeck }) {
                     New deck size: {Object.values(deck.cards).length}
                 </Alert>}
             </div>
-      </Snackbar>
+      </Snackbar>}
         <h1 className='search-header'> Search Cards</h1>
             <div className="search-options-wrapper">
 

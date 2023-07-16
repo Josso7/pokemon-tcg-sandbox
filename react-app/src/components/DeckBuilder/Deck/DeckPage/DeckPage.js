@@ -39,12 +39,12 @@ function DeckPage ({ currentPage, cards, selectedDeck }) {
 
     return (
         <>
-        <Snackbar TransitionComponent={TransitionSlideUp} open={toastOpen} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
+        {toastOpen && <Snackbar TransitionComponent={TransitionSlideUp} open={toastOpen} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
                 {toastType === 'success' && <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
                     <AlertTitle> Success </AlertTitle>
                     Card removed!
                 </Alert>}
-        </Snackbar>
+        </Snackbar>}
             <div className="deck-wrapper">
                 {pageCards && pageCards.length && pageCards.map((card) => {
                     return (
