@@ -1,21 +1,25 @@
 const LOAD_RESULTS = 'search/LOAD_RESULTS'
 
-const loadResultsCreator = (results) => {
+export const loadResultsCreator = (results, resultCount) => {
     return {
         type: LOAD_RESULTS,
-        results
+        results,
+        resultCount
     }
 }
 
 
 const initialState = {}
 
-const reducer = (state = initialState) => {
+const reducer = (state = initialState, action) => {
     switch(action.type){
         case LOAD_RESULTS: {
-            const newState = {}
-            newState
+            const newState = [...action.results]
+            newState.resultCount = action.resultCount
+            return newState
         }
         default: return state
     }
 }
+
+export default reducer

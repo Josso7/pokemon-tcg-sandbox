@@ -20,7 +20,10 @@ function DeckBuilderWrapper() {
     }, [])
 
     useEffect(() => {
-        if(selectedDeck) setDeckButtonDisabled(false)
+        if(selectedDeck) {
+            setDeckButtonDisabled(false)
+            setToggleScene('deck')
+        }
         if(selectedDeck === '0') {
             setDeckButtonDisabled(true)
             setToggleScene(null)
@@ -32,7 +35,7 @@ function DeckBuilderWrapper() {
         {/* <h1 className='deck-builder-header'>Deck Builder</h1> */}
         <div className='scene-toggle-wrapper'>
             <button disabled={deckButtonDisabled} className={toggleScene === 'search'? 'active-tab' : ''} onClick={() => setToggleScene("search")}>
-                Search
+                Add Cards
             </button>
             <button disabled={deckButtonDisabled} className={toggleScene === 'deck'? 'active-tab' : ''} onClick={() => setToggleScene("deck")}>
                 Deck

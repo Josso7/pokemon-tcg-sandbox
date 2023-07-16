@@ -5,11 +5,11 @@ import './Deck.css'
 
 function Deck({ selectedDeck }){
 
-    const decks = useSelector(state => Object.values(state.decks.userDecks))
+    // const decks = useSelector(state => Object.values(state.decks.userDecks))
     const deck = useSelector(state => state.decks.userDecks[selectedDeck])
     const [cards, setCards] = useState(null)
     const [currentPage, setCurrentPage] = useState(0)
-    const [cardTypeCounts, setCardTypeCounts] = useState({ "Pokémon": 0, 'Energy': 0, 'Item': 0, 'Supporter': 0, '"Pokémon Tool"': 0, 'Stadium': 0, 'Trainer': 0 })
+    const [cardTypeCounts, setCardTypeCounts] = useState({ "Pokémon": 0, 'Energy': 0, 'Item': 0, 'Supporter': 0, '"Pokémon Tool"': 0, 'Stadium': 0 })
     console.log(selectedDeck)
 
     const decreasePageNumber = (page) => setCurrentPage(page - 1)
@@ -27,11 +27,11 @@ function Deck({ selectedDeck }){
     }, [cards])
 
     const getCardTypeCounts = () => {
-        const cardTypes = { "Pokémon": 0, 'Energy': 0, 'Item': 0, 'Supporter': 0, "Pokémon Tool": 0, 'Stadium': 0, 'Trainer': 0 }
+        const cardTypes = { "Pokémon": 0, 'Energy': 0, 'Item': 0, 'Supporter': 0, "Pokémon Tool": 0, 'Stadium': 0 }
         cards.forEach((card) => {
             if(card.supertype === 'Trainer'){
                 cardTypes[card.subtype]++
-                cardTypes['Trainer']++
+                // cardTypes['Trainer']++
             } else {
                 cardTypes[card.supertype]++ 
             }

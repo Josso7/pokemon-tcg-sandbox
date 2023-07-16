@@ -27,9 +27,12 @@ def get_single_deck(deck_id):
 def add_card(deck_id):
     deck = Deck.query.get(deck_id)
     data = request.json
-    print(data)
+    # print(data)
+    print(len(deck.cards))
     if not deck:
-        return {"errors": "Deck not found"}
+        return {"errors": "Deck not found"}, 404
+    if len(deck.cards) == 60:
+        return {"errors": "MAX DECK SIZE"}, 403
     if deck:
         new_card = Card(image_url = data['imageUrl'], supertype = data['supertype'], subtype = data['subtype'])
         deck.cards.append(new_card)

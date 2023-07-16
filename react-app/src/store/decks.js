@@ -93,8 +93,10 @@ export const addCardToDeckThunk = (deckId, card) => async (dispatch) => {
     if(response.ok){
         const data = await response.json()
         dispatch(addCardCreator(deckId, data))
+        console.log('response ok')
         return
     } else {
+        console.log('response not ok')
         const errors = await response.json()
         return errors
     }

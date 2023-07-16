@@ -5,24 +5,40 @@ import energyCards from '../../../Data/energyCards'
 import { getPageResults } from '../../../utils/searchUtils'
 import { createPortal } from 'react-dom'
 import { addCardToDeckThunk } from '../../../store/decks'
-import { useDispatch } from 'react-redux'
+import { loadResultsCreator } from '../../../store/search'
+import { useDispatch, useSelector } from 'react-redux'
+import { Alert, AlertTitle } from '@mui/material'
+import { Snackbar } from '@mui/material'
 
 function PokemonSearch({ selectedDeck }) {
 
     const [expansion, setExpansion] = useState()
     const [supertype, setSupertype] = useState()
     const [type, setType] = useState()
-    const [results, setResults] = useState([])
+    const results = useSelector(state => state.search)
     const [pageCards, setPageCards] = useState([])
     const [pageNumber, setPageNumber] = useState(0)
     const [resultCount, setResultCount] = useState(0)
     const [loading, setLoading] = useState(false)
     const [loadingPage, setLoadingPage] = useState(1)
+    const deck = useSelector(state => state.decks.userDecks[selectedDeck])
+    const [toastType, setToastType] = useState()
+    const [toastOpen, setToastOpen] = useState()
     const dispatch = useDispatch()
 
-    const addCard = (card) => {
+
+    const addCard = async (card) => {
+        console.log(card.subtypes)
         const payload = {imageUrl: card.images.large, supertype: card.supertype, subtype: card.subtypes[0]}
-        dispatch(addCardToDeckThunk(selectedDeck, payload))
+        const response = await dispatch(addCardToDeckThunk(selectedDeck, payload))
+        console.log(response)
+        if (response?.errors === 'MAX DECK SIZE'){
+            setToastOpen(true)
+            setToastType('error')
+        } else {
+            setToastOpen(true)
+            setToastType('success')
+        }
     }
 
     const handleSearch = async () => {
@@ -32,8 +48,9 @@ function PokemonSearch({ selectedDeck }) {
         setLoading(true)
         const queryObject = {}
         if(supertype === 'Energy'){
-            setResults(energyCards)
-            setResultCount(16)
+            // setResults(energyCards)
+            dispatch(loadResultsCreator(energyCards, 16))
+            // setResultCount(16)
             setLoading(false)
             return
         }
@@ -53,17 +70,19 @@ function PokemonSearch({ selectedDeck }) {
         if(type && supertype === 'Pokémon') queryObject.q = queryObject.q + ` types:${type}`
         console.log(queryObject)
         const results = await pokemon.card.where(queryObject)
-        setResultCount(results.totalCount)
+        // setResultCount(results.totalCount)
         const searchResults = await getPageResults(results, queryObject, setLoadingPage)
         console.log(searchResults)
-        setResults(searchResults)
+        // setResults(searchResults)
+        dispatch(loadResultsCreator(searchResults, results.totalCount))
         setLoading(false)
     }
 
     const paginateCards = () => {
         const cardsArr = []
         console.log(results)
-        for(let i = pageNumber * 20; i < (pageNumber * 20) + 20 && i < resultCount; i++){
+        console.log(pageNumber)
+        for(let i = pageNumber * 20; i < (pageNumber * 20) + 20 && i < results.resultCount; i++){
             console.log(i)
             cardsArr.push(results[i])
         }
@@ -72,18 +91,40 @@ function PokemonSearch({ selectedDeck }) {
     }
 
     useEffect(() => {
-        if(results.length) paginateCards()
-    }, [pageNumber])
+        if(results.length) {
+            paginateCards()
+        }
+    }, [pageNumber, results])
 
-    useEffect(() => {
-        if(results.length) paginateCards()
-    }, [results])
+    // useEffect(() => {
+    //     if(results.length) paginateCards()
+    // }, [])
+
+    // useEffect(() => {
+    //     if(results.length) paginateCards()
+    // }, [results])
 
     const increasePage = (page) => setPageNumber(page + 1)
     const decreasePage = (page) => setPageNumber(page - 1)
+    
+      const handleClose = () => {
+        setToastOpen(false)
+      }
 
     return (
         <>
+        <Snackbar open={toastOpen} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
+            <div>
+                {toastType === 'error' && <Alert onClose={handleClose} severity='error' sx={{ width: '100%' }}>
+                    <AlertTitle> Error </AlertTitle>
+                    Your deck already has 60 cards!
+                </Alert>}
+                {toastType === 'success' && <Alert onClose={handleClose} severity='success' sx={{ width: '100%' }}>
+                    <AlertTitle> Success </AlertTitle>
+                    New deck size: {Object.values(deck.cards).length}
+                </Alert>}
+            </div>
+      </Snackbar>
         <h1 className='search-header'> Search Cards</h1>
             <div className="search-options-wrapper">
 
@@ -158,8 +199,8 @@ function PokemonSearch({ selectedDeck }) {
             {loading && createPortal(<div className='loading-background'>
                 <div className='loading-text'>
                     <p>Loading results, this may take some time</p>
-                    {resultCount && resultCount < 251 && <p>{`Loading ${resultCount} of ${resultCount} `}</p> || ''}
-                    {resultCount > 251 && <p>{`Loading ${loadingPage * 250 > resultCount ? resultCount : loadingPage * 250} of ${resultCount} `}</p>}
+                    {results.resultCount && results.resultCount < 251 && <p>{`Loading ${results.resultCount} of ${results.resultCount} `}</p> || ''}
+                        {results.resultCount > 251 && <p>{`Loading ${loadingPage * 250 > results.resultCount ? results.resultCount : loadingPage * 250} of ${results.resultCount} `}</p>}
                 </div>
             </div>, document.querySelector('#root'))}
             <div className='cards-wrapper'>
@@ -185,7 +226,7 @@ function PokemonSearch({ selectedDeck }) {
                     {'Page ' + (pageNumber + 1) + ' of ' + Math.ceil(results.length / 20)}
                 </div>
                 <div>
-                    <button onClick={() => increasePage(pageNumber)}> Next Page </button>
+                    {pageNumber <= (results.resultCount / 20) - 1 && <button onClick={() => increasePage(pageNumber)}> Next Page </button>}
                 </div>
             </div> || ''}
         </>
