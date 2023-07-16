@@ -15,6 +15,9 @@ function Navigation({ isLoaded }){
 			<li>
 				<NavLink exact to="/build-deck">Build a Deck</NavLink>
 			</li>
+			<li>
+				<NavLink exact to="/play"> Play Game </NavLink>
+			</li>
 
 			{isLoaded && (
 				<li>

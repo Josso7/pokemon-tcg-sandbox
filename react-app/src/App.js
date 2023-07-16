@@ -7,6 +7,7 @@ import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
 import PokemonSearch from "./components/PokemonSearch"
 import DeckBuilderWrapper from "./components/DeckBuilder";
+import GameLobbyWrapper from "./components/GameLobbyWrapper/GameLobbyWrapper";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,6 +26,9 @@ function App() {
           </Route>
           <Route exact path='/build-deck'>
             <DeckBuilderWrapper />
+          </Route>
+          <Route exact path='/play'>
+            <GameLobbyWrapper />
           </Route>
           <Route exact path='/'>
             <DeckBuilderWrapper />
