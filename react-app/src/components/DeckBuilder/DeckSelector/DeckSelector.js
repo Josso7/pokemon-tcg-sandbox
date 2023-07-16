@@ -39,11 +39,11 @@ function DeckSelector({ setSelectedDeck, selectedDeck }) {
                     </option>
                 ))}
             </select>
-            {selectedDeck && <input value={updateDeckName} onChange={(e) => setUpdateDeckName(e.target.value)} placeholder="Update Deck Name..."></input> || ''}
-            {selectedDeck && <button onClick={() => updateDeck()}> Update Deck Name </button> || ''}
-            {selectedDeck && <button onClick={() => deleteDeck()} className="delete-deck-button"> Delete Selected Deck </button> || ''}
-            {!selectedDeck && <input value={deckName} placeholder='Create a new Deck...' onChange={(e) => setDeckName(e.target.value)}></input> || ''}
-            {!selectedDeck && <button onClick={() => newDeck()} className="new-deck-button"> Create New Deck </button> || ''}
+            {selectedDeck !== '0' && <input value={updateDeckName} onChange={(e) => setUpdateDeckName(e.target.value)} placeholder="Update Deck Name..."></input> || ''}
+            {selectedDeck !== '0' && <button onClick={() => updateDeck()}> Update Deck Name </button> || ''}
+            {selectedDeck !== '0' && <button onClick={() => deleteDeck()} className="delete-deck-button"> Delete Selected Deck </button> || ''}
+            {selectedDeck === '0' && <input value={deckName} placeholder='Create a new Deck...' onChange={(e) => setDeckName(e.target.value)}></input> || ''}
+            {selectedDeck === '0' && <button onClick={() => newDeck()} className="new-deck-button"> Create New Deck </button> || ''}
         </>
     )
 }

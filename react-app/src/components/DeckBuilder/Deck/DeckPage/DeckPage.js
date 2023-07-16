@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { removeCardFromDeckThunk } from "../../../../store/decks"
+import { Alert, AlertTitle, Snackbar, Slide } from "@mui/material"
 
 function DeckPage ({ currentPage, cards, selectedDeck }) {
 
     const [pageCards, setPageCards] = useState(null)
+    const [toastOpen, setToastOpen] = useState()
+    const [toastType, setToastType] = useState()
     const dispatch = useDispatch()
 
     const removeCard = (card) => {
         dispatch(removeCardFromDeckThunk(selectedDeck, card))
+        setToastType("success")
+        setToastOpen(true)
     }
 
     useEffect(() => {
@@ -23,8 +28,23 @@ function DeckPage ({ currentPage, cards, selectedDeck }) {
         })
     }, [currentPage, cards])
 
+    const handleClose = (event, reason) => {
+        if(reason !== 'clickaway')
+        setToastOpen(false)
+    }
+
+    const TransitionSlideUp = (props) => {
+        return <Slide {...props} direction="up"/>
+    }
+
     return (
         <>
+        <Snackbar TransitionComponent={TransitionSlideUp} open={toastOpen} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
+                {toastType === 'success' && <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+                    <AlertTitle> Success </AlertTitle>
+                    Card removed!
+                </Alert>}
+        </Snackbar>
             <div className="deck-wrapper">
                 {pageCards && pageCards.length && pageCards.map((card) => {
                     return (

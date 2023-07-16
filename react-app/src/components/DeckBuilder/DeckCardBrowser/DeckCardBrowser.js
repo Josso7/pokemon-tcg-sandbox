@@ -7,8 +7,7 @@ import { createPortal } from 'react-dom'
 import { addCardToDeckThunk } from '../../../store/decks'
 import { loadResultsCreator } from '../../../store/search'
 import { useDispatch, useSelector } from 'react-redux'
-import { Alert, AlertTitle } from '@mui/material'
-import { Snackbar } from '@mui/material'
+import { Alert, AlertTitle, Slide, Snackbar } from '@mui/material'
 
 function PokemonSearch({ selectedDeck }) {
 
@@ -111,9 +110,14 @@ function PokemonSearch({ selectedDeck }) {
         setToastOpen(false)
       }
 
+    const TransitionSlideUp = (props) => {
+        return <Slide {...props} direction="up"/>
+    }
+
+
     return (
         <>
-        <Snackbar open={toastOpen} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
+        <Snackbar TransitionComponent={TransitionSlideUp} open={toastOpen} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}>
             <div>
                 {toastType === 'error' && <Alert onClose={handleClose} severity='error' sx={{ width: '100%' }}>
                     <AlertTitle> Error </AlertTitle>

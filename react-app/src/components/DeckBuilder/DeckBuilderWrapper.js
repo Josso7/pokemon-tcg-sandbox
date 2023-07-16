@@ -11,7 +11,7 @@ function DeckBuilderWrapper() {
     const dispatch = useDispatch()
 
     const [toggleScene, setToggleScene] = useState(null)
-    const [selectedDeck, setSelectedDeck] = useState(0)
+    const [selectedDeck, setSelectedDeck] = useState('0')
     const [deckButtonDisabled, setDeckButtonDisabled] = useState(true)
     const user = useSelector(state => state.session.user)
 

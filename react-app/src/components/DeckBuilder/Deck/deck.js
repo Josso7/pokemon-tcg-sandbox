@@ -39,14 +39,6 @@ function Deck({ selectedDeck }){
         return cardTypes
     }
 
-    const getEnergyCount = () => {
-
-    }
-
-    const getTrainerCount = () => {
-
-    }
-
     return (
         <>
         <h1 className='deck-header'> {deck?.name} Deck </h1>
