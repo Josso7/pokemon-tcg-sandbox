@@ -27,10 +27,11 @@ def get_single_deck(deck_id):
 def add_card(deck_id):
     deck = Deck.query.get(deck_id)
     data = request.json
+    print(data)
     if not deck:
         return {"errors": "Deck not found"}
     if deck:
-        new_card = Card(image_url = data['imageUrl'], supertype = data['supertype'], subtype = data['subtypes'][0])
+        new_card = Card(image_url = data['imageUrl'], supertype = data['supertype'], subtype = data['subtype'])
         deck.cards.append(new_card)
         db.session.commit()
         return new_card.to_dict()

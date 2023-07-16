@@ -21,7 +21,7 @@ function PokemonSearch({ selectedDeck }) {
     const dispatch = useDispatch()
 
     const addCard = (card) => {
-        const payload = {imageUrl: card.images.large}
+        const payload = {imageUrl: card.images.large, supertype: card.supertype, subtype: card.subtypes[0]}
         dispatch(addCardToDeckThunk(selectedDeck, payload))
     }
 
