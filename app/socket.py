@@ -1,6 +1,6 @@
-from flask_socketio import join_room, emit
-from app import socketio
+from flask_socketio import SocketIO, join_room, emit
 
+socketio = SocketIO(cors_allowed_origins="*", logger=True, engineio_logger=True)
 
 rooms = {}
 
@@ -17,5 +17,5 @@ def join_room(data):
 def check_room(lobbyId):
     print('checking room')
     print(rooms)
-    if not rooms[lobbyId]:
+    if not lobbyId in rooms:
         emit("room_not_found")

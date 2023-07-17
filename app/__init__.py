@@ -11,10 +11,15 @@ from .api.auth_routes import auth_routes
 from .api.deck_routes import deck_routes
 from .seeds import seed_commands
 from .config import Config
+from .socket import socketio
 
 app = Flask(__name__, static_folder='../react-app/build', static_url_path='/')
-socketio = SocketIO(cors_allowed_origins="*")
+# socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
 socketio.init_app(app)
+if(__name__ == 'app'):  
+    socketio.run(app)
+
+# print(__name__)
 # Setup login manager
 login = LoginManager(app)
 login.login_view = 'auth.unauthorized'

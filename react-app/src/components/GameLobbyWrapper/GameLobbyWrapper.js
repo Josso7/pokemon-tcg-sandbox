@@ -1,16 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Redirect, useHistory } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import { io } from 'socket.io-client'
 import './GameLobbyWrapper.css'
+import { Alert, AlertTitle, Snackbar } from '@mui/material';
 
 function GameLobbyWrapper () {
 
     const [lobbyId, setLobbyId] = useState()
+    const [socket, setSocket] = useState()
+    const [toastOpen, setToastOpen] = useState(false)
     const [showLobbyJoin, setShowLobbyJoin] = useState(false)
     const history = useHistory()
 
-    let socket;
+
+    useEffect(() => {
+        setSocket(io())
+
+        return (() => {
+
+        })
+    }, [])
 
     const handleCreate = () => {
         const newLobbyId = uuidv4();
@@ -18,7 +28,6 @@ function GameLobbyWrapper () {
     }
 
     const handleJoin = () => {
-        socket = io()
         console.log('test')
         socket.emit('check_room', lobbyId)
     }
@@ -27,8 +36,19 @@ function GameLobbyWrapper () {
         setShowLobbyJoin(true)
     }
 
+    const handleClose = () => {
+        
+    }
+
+
     return (
         <>
+        {toastOpen && <Snackbar open={toastOpen} onClose={handleClose} autoHideDuration={3000} anchorOrigin={{horizontal: 'center', vertical: 'top'}}>
+            <Alert severity='error'>
+                <AlertTitle> Error </AlertTitle>
+                No room found 
+            </Alert>
+        </Snackbar>}
             <div>
                 <button onClick={handleCreate}>
                     Create Game
