@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Redirect, useHistory } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
+import { io } from 'socket.io-client'
 import './GameLobbyWrapper.css'
 
 function GameLobbyWrapper () {
@@ -9,13 +10,17 @@ function GameLobbyWrapper () {
     const [showLobbyJoin, setShowLobbyJoin] = useState(false)
     const history = useHistory()
 
+    let socket;
+
     const handleCreate = () => {
         const newLobbyId = uuidv4();
         history.push(`/lobby/${newLobbyId}`)
     }
 
     const handleJoin = () => {
-        
+        socket = io()
+        console.log('test')
+        socket.emit('check_room', lobbyId)
     }
 
     const showJoinLobbyForm = () => {
