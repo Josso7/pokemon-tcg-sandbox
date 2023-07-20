@@ -9,7 +9,8 @@ def join_room(data):
     username = data['username']
     room = data['room']
     join_room(room)
-    rooms[room] = {'users': {username}}
+    if room in rooms:
+        rooms[room].users.append(username)
     print(rooms)
     emit('message', {data: username + 'has joined the lobby!'}, to=room)
 
@@ -19,3 +20,9 @@ def check_room(lobbyId):
     print(rooms)
     if not lobbyId in rooms:
         emit("room_not_found")
+    
+@socketio.on("create_room")
+def create_room(lobbyId, username):
+    rooms[lobbyId] = {'users': []}
+    rooms[lobbyId]['users'].append(username)
+    print(rooms)

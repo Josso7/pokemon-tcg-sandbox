@@ -4,27 +4,37 @@ import { v4 as uuidv4 } from 'uuid'
 import { io } from 'socket.io-client'
 import './GameLobbyWrapper.css'
 import { Alert, AlertTitle, Snackbar } from '@mui/material';
+import { useSelector } from 'react-redux';
+
+let socket;
 
 function GameLobbyWrapper () {
 
     const [lobbyId, setLobbyId] = useState()
-    const [socket, setSocket] = useState()
+    // const [socket, setSocket] = useState(io())
+    const user = useSelector(state => state.session.user)
     const [toastOpen, setToastOpen] = useState(false)
     const [showLobbyJoin, setShowLobbyJoin] = useState(false)
     const history = useHistory()
 
 
     useEffect(() => {
-        setSocket(io())
+        socket = io()
+
+        socket.on("room_not_found", () => {
+            setToastOpen(true)
+        })
 
         return (() => {
-
+            socket.off("room_not_found")
+            socket.disconnect()
         })
     }, [])
 
     const handleCreate = () => {
         const newLobbyId = uuidv4();
         history.push(`/lobby/${newLobbyId}`)
+        socket.emit("create_room", newLobbyId, user.username)
     }
 
     const handleJoin = () => {
@@ -36,18 +46,19 @@ function GameLobbyWrapper () {
         setShowLobbyJoin(true)
     }
 
-    const handleClose = () => {
-        
+    const handleClose = (event, reason) => {
+        if(reason !== 'clickaway'){
+            setToastOpen(false)
+        }
     }
-
 
     return (
         <>
         {toastOpen && <Snackbar open={toastOpen} onClose={handleClose} autoHideDuration={3000} anchorOrigin={{horizontal: 'center', vertical: 'top'}}>
-            <Alert severity='error'>
+            {toastOpen && <Alert onClose={handleClose} sx={{width: "100%"}} severity='error'>    
                 <AlertTitle> Error </AlertTitle>
                 No room found 
-            </Alert>
+            </Alert>}
         </Snackbar>}
             <div>
                 <button onClick={handleCreate}>
