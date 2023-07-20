@@ -16,8 +16,8 @@ from .socket import socketio
 app = Flask(__name__, static_folder='../react-app/build', static_url_path='/')
 # socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
 socketio.init_app(app)
-if(__name__ == 'app'):  
-    socketio.run(app)
+# if(__name__ == 'app'):
+#     socketio.run(app)
 
 # print(__name__)
 # Setup login manager

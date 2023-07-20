@@ -18,7 +18,7 @@ function Deck({ selectedDeck }){
     useEffect(() => {
         console.log(cards)
         // setDeck(decks.find(deck => deck.id == selectedDeck))
-        if(selectedDeck !== '0') {
+        if(deck && selectedDeck !== '0') {
             setCards(Object.values(deck.cards))
         }
         if(selectedDeck === '0'){
@@ -37,7 +37,7 @@ function Deck({ selectedDeck }){
                 cardTypes[card.subtype]++
                 // cardTypes['Trainer']++
             } else {
-                cardTypes[card.supertype]++ 
+                cardTypes[card.supertype]++
             }
         })
         return cardTypes
@@ -58,7 +58,7 @@ function Deck({ selectedDeck }){
                 {cards && cards.length && <div className='page-text'> {'Page ' + (currentPage + 1) + ' of ' + Math.ceil(cards?.length / 20)} </div> || ''}
                 {currentPage + 1 < Math.ceil(cards?.length / 20) && <button onClick={() => increasePageNumber(currentPage)}>Next Page</button>}
             </div>
-        </> 
+        </>
     )
 }
 
