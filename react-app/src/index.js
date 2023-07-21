@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
 import { ModalProvider, Modal } from "./context/Modal";
+import { SocketProvider } from './context/SocketContext'
 import configureStore from "./store";
 import * as sessionActions from "./store/session";
 import App from "./App";
@@ -23,20 +24,21 @@ if (process.env.NODE_ENV !== "production") {
 // HTML elements on top of the all the other HTML elements:
 function Root() {
 	return (
-		<ModalProvider>
-			<Provider store={store}>
-				<BrowserRouter>
-					<App />
-					<Modal />
-				</BrowserRouter>
-			</Provider>
-		</ModalProvider>
+		<SocketProvider>
+			<ModalProvider>
+				<Provider store={store}>
+					<BrowserRouter>
+						<App />
+						<Modal />
+					</BrowserRouter>
+				</Provider>
+			</ModalProvider>
+		</SocketProvider>
 	);
 }
 
 ReactDOM.render(
-	<React.StrictMode>
-		<Root />
-	</React.StrictMode>,
+		<Root />,
+
 	document.getElementById("root")
 );
