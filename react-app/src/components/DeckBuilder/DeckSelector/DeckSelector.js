@@ -39,7 +39,7 @@ function DeckSelector({ setSelectedDeck, selectedDeck }) {
                     </option>
                 ))}
             </select>
-            {selectedDeck !== '0' && <input value={updateDeckName} onChange={(e) => setUpdateDeckName(e.target.value)} placeholder="Update Deck Name..."></input> || ''}
+            {selectedDeck !== '0' && <input value={updateDeckName} onChange={(e) => setUpdateDeckName(e.target.value)} placeholder="Enter new Deck Name..."></input> || ''}
             {selectedDeck !== '0' && <button onClick={() => updateDeck()}> Update Deck Name </button> || ''}
             {selectedDeck !== '0' && <button onClick={() => deleteDeck()} className="delete-deck-button"> Delete Selected Deck </button> || ''}
             {selectedDeck === '0' && <input value={deckName} placeholder='Create a new Deck...' onChange={(e) => setDeckName(e.target.value)}></input> || ''}
